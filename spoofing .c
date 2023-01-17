@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include <netinet/tcp.h>
 #include <stdlib.h>
 #include <net/ethernet.h>
@@ -116,7 +115,7 @@ void icmp()
 
     // Calculate the checksum for integrity
     icmp->icmp_chksum = 0;
-    icmp->icmp_chksum = in_cksum((unsigned short *)icmp,
+    icmp->icmp_chksum = in_checksum((unsigned short *)icmp,
                                  sizeof(struct icmpheader));
 
     // Step 2: Fill in the IP header.
@@ -252,7 +251,7 @@ void tcp()
 
     memcpy(pseudogram, (char *)&psh, sizeof(struct help_header));
     memcpy(pseudogram + sizeof(struct help_header), tcph, sizeof(struct tcphdr) + strlen(data));
-    tcph->check = in_cksum((unsigned short *)pseudogram, psize);
+    tcph->check = in_checksum((unsigned short *)pseudogram, psize);
     // IP_HDRINCL to tell the kernel that headers are included in the packet
     int one = 1;
     const int *val = &one;
@@ -272,7 +271,7 @@ void tcp()
 int main()
 {
     // icmp();
-    udp();
-    // tcp();
+    //udp();
+     tcp();
     return 0;
 }
