@@ -65,7 +65,7 @@ void packet_to_spoof(struct ipheader *ip_packet)
 		ip_packet->ip_ihl = 5;
 		return;
 	}
-	prinf("packet sent\n");
+	printf("packet sent\n");
 	close(sockfd);
 }
 
@@ -74,7 +74,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 
 	struct ethheader *ether_packet = (struct ethheader *)packet;
 	struct ipheader *ip_packet;
-	ip_packet = (struct ipheader *)(packet +sizeof(struct ethheader);
+	ip_packet = (struct ipheader *)packet +sizeof(struct ethheader);
     char buffer[1500];
     memset((char *)buffer, 0, 1500);
     memcpy((char *)buffer, ip_packet, ntohs(ip_packet->ip_len));
