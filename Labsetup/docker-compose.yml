@@ -25,6 +25,8 @@ services:
                       /etc/init.d/openbsd-inetd start  &&
                       tail -f /dev/null
                  "
+        volumes:
+            - ./volumes:/volumes
 
     hostB:
         image: handsonsecurity/seed-ubuntu:large
@@ -39,7 +41,9 @@ services:
                       /etc/init.d/openbsd-inetd start  &&
                       tail -f /dev/null
                  "
-                  
+        volumes:
+            - ./volumes:/volumes
+
 networks:
     net-10.9.0.0:
         name: net-10.9.0.0
