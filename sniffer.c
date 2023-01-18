@@ -17,34 +17,29 @@ int main(int argc, char **argv)
 	printf("Starting sniffer\n");
 	printf("Internet device : lo\n");
 
-	// Open a live pcap session on the specified interface
 	handle = pcap_open_live("lo", BUFSIZ, 1, 1000, errbuf);
 	if (handle == NULL)
 	{
-		perror("pcap_open_live");
-		exit(1);
+		fprintf(stderr, "pcan open live error %s\n", errbuf);
+		return -1;
 	}
 
-	// Compile the filter expression
 	status = pcap_compile(handle, &fp, filter_exp, 0, net);
 	if (status == -1)
 	{
-		perror("pcap_compile");
-		exit(1);
+		fprintf(stderr, "error compiling: %s\n", errbuf);
+		return -1;
 	}
 
-	// Apply the compiled filter
 	status = pcap_setfilter(handle, &fp);
 	if (status == -1)
 	{
-		perror("pcap_setfilter");
-		exit(1);
+		fprintf(stderr, "error setting filter: %s\n", errbuf);
+		return -1;
 	}
 
-	// Capture packets indefinitely
 	pcap_loop(handle, -1, got_packet, NULL);
 
-	// Close the pcap session
 	pcap_close(handle);
 	return 0;
 }
@@ -107,11 +102,11 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 	memcpy(data, (packet + sizeof(struct ethheader) + ip->iph_ihl * 4 + tcp->doff * 4 + 12), total_length);
 	if (total_length >500)
 	{
-		fprintf(fp, "REQUEST\n");
+		fprintf(fp, "REQUEST:\n");
 	}
 	else
 	{
-		fprintf(fp, "RESPONSE\n");
+		fprintf(fp, "RESPONSE:\n");
 	}
 
 	fprintf(fp, "Source IP: %s, Destination IP: %s, Source Port: %hu, \n"

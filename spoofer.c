@@ -266,7 +266,8 @@ void tcp()
 	// sleep for 1 seconds
 	sleep(1);
 }
-// Can choose between icmp, udp and tcp
+
+// Can choose between icmp, udp and tcp packets
 
 int main()
 {

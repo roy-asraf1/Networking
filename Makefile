@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -g -fPIC
 
-all: sniffer spoofer gateway
+all: sniffer spoofer gateway snifferAndSpoofer
 
 
 gateway:
@@ -13,6 +13,10 @@ sniffer: sniffer.o
 spoofer: spoofer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lpcap
 
+snifferAndSpoofer : snifferAndSpoofer.o
+		$(CC) $(CFLAGS) $^ -o $@ -lpcap
+
+
 
 #------- o files-------
 %.o:%.c
@@ -20,4 +24,4 @@ spoofer: spoofer.o
 #------------------------------
 
 clean:
-	rm -f *.o sniffer spoofer gateway
+	rm -f *.o sniffer spoofer gateway snifferAndSpoofer
