@@ -72,12 +72,13 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 	{
 		perror("fopen");
 	}
-	char src_ip[16];
-	char dest_ip[16];
-	struct ipheader *ip = (struct ipheader *)(packet + sizeof(struct ethheader));
-	inet_ntop(AF_INET, &(ip->iph_sourceip), src_ip, INET_ADDRSTRLEN);
-	inet_ntop(AF_INET, &(ip->iph_destip), dest_ip, INET_ADDRSTRLEN);
-	printf("Source IP: %s, Destination IP: %s\n", src_ip, dest_ip);
+
+
+	char src_ip[16], dest_ip[16]; // 16 bytes for IPv4 address
+	struct ipheader *ip = (struct ipheader *)(packet + sizeof(struct ethheader)); // ip header
+	inet_ntop(AF_INET, &(ip->iph_sourceip), src_ip, INET_ADDRSTRLEN); // convert ip address to string
+	inet_ntop(AF_INET, &(ip->iph_destip), dest_ip, INET_ADDRSTRLEN); // convert ip address to string
+	printf("Source IP: %s, Destination IP: %s\n", src_ip, dest_ip); // print ip address
 
 	struct tcphdr *tcp = (struct tcphdr *)(packet + sizeof(struct ethheader) + ip->iph_ihl * 4);
 	if (!tcp->psh)
@@ -104,6 +105,14 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 	// Extract packet data
 	uint8_t data[total_length];
 	memcpy(data, (packet + sizeof(struct ethheader) + ip->iph_ihl * 4 + tcp->doff * 4 + 12), total_length);
+	if (total_length >500)
+	{
+		fprintf(fp, "REQUEST\n");
+	}
+	else
+	{
+		fprintf(fp, "RESPONSE\n");
+	}
 
 	fprintf(fp, "Source IP: %s, Destination IP: %s, Source Port: %hu, \n"
 				"Destination Port: %hu, Timestamp: %u, Total Length: %hu, Cache Flag: %hu, \n"
