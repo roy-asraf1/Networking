@@ -7,37 +7,35 @@ int main(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
+    char errbuf[PCAP_ERRBUF_SIZE]; // error buffer
+    pcap_t *handle; // handle to device
+    char *device = "enp0s3"; // device to sniff on
+    char *filter = "icmp[icmptype] = icmp-echo"; // filter for icmp echo request
+    struct bpf_program filter_exp; // compiled filter
+    bpf_u_int32 net = 0; 		 // ip address of device
 
-	char errbuf[PCAP_ERRBUF_SIZE];
-	pcap_t *handle;
-	char *device = "enp0s3";						 // internet device
-	char *filter_exp = "icmp[icmptype] = icmp-echo"; // filter
-	struct bpf_program filter_exp;					 // filter
-	bpf_u_int32 net = 0;
-	printf("Starting sniffer\n");
-	printf("Internet device : %s\n", device);
-	printf("Filter : %s\n", filter_exp);
-	handle = pcap_open_live(device, BUFSIZ, 1, 1000, errbuf);
-	if (handle == NULL)
-	{
-		fprintf(stderr, "Error opening device: %s\n", errbuf);
-		return -1;
-	}
+    handle = pcap_open_live(device, BUFSIZ, 1, 1000, errbuf);
+    if (handle == NULL)
+    {
+        fprintf(stderr, "Error opening device %s: %s\n", device, errbuf);
+        return -1;
+    }
 
-	if (pcap_compile(handle, &filter_exp, filter_exp, 0, net) == -1)
-	{
-		fprintf(stderr, "Error compiling filter: %s\n", pcap_geterr(handle));
-		return -1;
-	}
+    if (pcap_compile(handle, &filter_exp, filter, 0, net) == -1)
+    {
+        fprintf(stderr, "Error compiling filter: %s\n", errbuf);
+        return -1;
+    }
 
-	if (pcap_setfilter(handle, &filter_exp) == -1)
-	{
-		fprintf(stderr, "Error setting filter: %s\n", pcap_geterr(handle));
-		return -1;
-	}
-	pcap_loop(handle, -1, got_packet, NULL);
-	pcap_close(handle);
-	return 0;
+    if (pcap_setfilter(handle, &filter_exp) == -1)
+    {
+        fprintf(stderr, "Error setting filter: %s\n", errbuf);
+        return -1;
+    }
+
+    pcap_loop(handle, -1, got_packet, NULL);
+    pcap_close(handle);
+    return 0;
 }
 /**
  * @brief icmp raw packet
