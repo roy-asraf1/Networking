@@ -23,7 +23,6 @@ struct ipheader
 	unsigned short int ipacketh_len; // IP Packet length (data + header)
 	unsigned short int iph_ident;	 // Identification
 	unsigned short int iph_flag : 3; // Fragmentation flags
-	unsigned short int iph_id;
 	unsigned short int iph_offset : 13; // Flags offset
 	unsigned char iph_ttl;				// Time to Live
 	unsigned char iph_protocol;			// Protocol type
@@ -37,7 +36,6 @@ struct icmpheader
 	unsigned char icmp_type;		// ICMP message type
 	unsigned char icmp_code;		// Error code
 	unsigned short int icmp_chksum; // Checksum for ICMP Header and data
-	unsigned short int icmp_id;		// Used for identifying request
 	unsigned short int icmp_seq;	// Sequence number
 };
 void send_raw_ip_packet(struct ipheader *ip)
@@ -155,11 +153,9 @@ void udp()
 	udp->udp_sport = htons(5555);
 	udp->udp_dport = htons(5555);
 	udp->udp_ulen = htons(sizeof(struct udpheader) + data_len2);
-	udp->udp_sum = 0; /* Many OSes ignore this field, so we do not
-						 calculate it. */
+	udp->udp_sum = 0; 
 
 	// ip header
-	/* Code omitted here; same as that in (@Listing~\ref{snoof:list:icmpecho}@) */
 	(*ip).iph_ver = 4;
 	(*ip).iph_ihl = 5;
 	(*ip).iph_ttl = 20;
@@ -267,12 +263,12 @@ void tcp()
 	sleep(1);
 }
 
-// Can choose between icmp, udp and tcp packets
+// choose between icmp, udp and tcp packets
 
 int main()
 {
-	// icmp();
-	// udp();
-	tcp();
+	//icmp();
+	udp();
+	//tcp();
 	return 0;
 }
