@@ -3,9 +3,17 @@
 #include <net/ethernet.h>
 #include <pcap.h>
 #include <arpa/inet.h>
-#include <sys/socket.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <netinet/tcp.h>
+#include <net/ethernet.h>
+#include <sys/socket.h>
+#include <errno.h>
+#include <time.h>
+#include <pcap/pcap.h>
+#include <netinet/ip_icmp.h>
 
 struct icmpheader
 {
