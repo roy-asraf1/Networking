@@ -7,7 +7,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 int main(){
 	char errbuf[PCAP_ERRBUF_SIZE]; // error buffer
 	pcap_t *handle;  // handle to device
-	char *device = "br-bdcb435cfc0e"; // device to sniff on
+	char *device =  "br-0c101745eb14";    //"br-bdcb435cfc0e"; // device to sniff on
 	char *filter = "icmp"; // filter for icmp echo request
 	struct bpf_program filter_exp;
 	bpf_u_int32 net;  // ip address of device
@@ -94,6 +94,16 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
       
       exit(1);
     }
+    char* saddr = inet_ntoa(ip_2->iph_sourceip);
+
+    printf("a: \n source ip: %s," ,saddr);
+    char *da = inet_ntoa(ip_2->iph_destip);
+
+    printf("b: destintion ip: %s \n",da);
+
+
+
+
     if(icmp_2->icmp_type == 8){
              char buffer[1500];
                 memset(buffer, 0, 1500);
@@ -123,12 +133,13 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
     ip->iph_ttl = ip_2->iph_ttl;
     ip->iph_len =  (htons(sizeof(struct ipheader) +sizeof(struct icmpheader)));
     ip->iph_chksum =checksum((unsigned short *)ip,sizeof(struct ipheader));
-    char* sa = inet_ntoa(ip->iph_sourceip);
-    printf("a:\n");
-    printf("source_ip: %s",sa);
-    char* da = inet_ntoa(ip->iph_sourceip);
-    printf(", b: %s\n",da);
-    icmp_raw_packet(ip);
+    
+
+    
+
+
+        icmp_raw_packet(ip);
+   
     }
     
 		
