@@ -1,16 +1,14 @@
 CC = gcc
 CFLAGS = -Wall -g -fPIC
 # build
-build: sniffer spoofer gateway snifferAndSpoofer
+build: sniffer spoofer snifferAndSpoofer
 
 all: clean build
 
 
 clean:
-	rm -f *.o sniffer spoofer gateway snifferAndSpoofer
+	rm -f *.o sniffer spoofer snifferAndSpoofer
 
-gateway:
-	gcc -o gateway gateway.c -Wall -g -fPIC -lpcap
 
 sniffer: sniffer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lpcap
@@ -25,9 +23,6 @@ snifferAndSpoofer : snifferAndSpoofer.o
 %.o:%.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
-
-clean:
-	rm -f *.o sniffer spoofer gateway snifferAndSpoofer
 
 
 
